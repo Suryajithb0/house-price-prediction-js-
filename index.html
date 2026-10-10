@@ -1,0 +1,234 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EstateIQ | House Price Predictor</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/model.js" defer></script>
+    <script src="js/app.js" defer></script>
+</head>
+
+<body>
+    <header class="topbar">
+        <a href="#" class="brand">
+            <span class="brand-icon">E</span>
+            EstateSu
+        </a>
+
+        <span class="header-label">AI PROPERTY VALUATION</span>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <div class="hero-content">
+                <p class="eyebrow">SMARTER PROPERTY DECISIONS</p>
+
+                <h1>Discover what your<br>
+                    <span>house is worth.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Estimate property prices using patterns learned
+                    from historical housing data and machine learning.
+                </p>
+            </div>
+
+            <div class="hero-visual">
+                <div class="house-symbol">⌂</div>
+                <div class="visual-caption">
+                    <span class="status-dot"></span>
+                    Regression model
+                </div>
+            </div>
+        </section>
+
+        <section class="dashboard">
+            <div class="panel input-panel">
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">PROPERTY DETAILS</p>
+                        <h2>Describe your house</h2>
+                    </div>
+
+                    <span class="step-number">01</span>
+                </div>
+
+                <p class="muted">
+                    Adjust the values to estimate the property's price.
+                </p>
+
+                <form id="prediction-form">
+                    <div class="field">
+                        <div class="field-heading">
+                            <label for="size">House size</label>
+                            <output id="size-value">1400 sqft</output>
+                        </div>
+
+                        <input
+                            type="range"
+                            id="size"
+                            min="400"
+                            max="3000"
+                            step="50"
+                            value="1400"
+                        >
+
+                        <div class="range-labels">
+                            <span>400 sqft</span>
+                            <span>3000 sqft</span>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-heading">
+                            <label for="bedrooms">Bedrooms</label>
+                            <output id="bedrooms-value">3</output>
+                        </div>
+
+                        <input
+                            type="range"
+                            id="bedrooms"
+                            min="1"
+                            max="6"
+                            step="1"
+                            value="3"
+                        >
+
+                        <div class="range-labels">
+                            <span>1 bedroom</span>
+                            <span>6 bedrooms</span>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-heading">
+                            <label for="age">Property age</label>
+                            <output id="age-value">5 years</output>
+                        </div>
+
+                        <input
+                            type="range"
+                            id="age"
+                            min="0"
+                            max="50"
+                            step="1"
+                            value="5"
+                        >
+
+                        <div class="range-labels">
+                            <span>New property</span>
+                            <span>50 years</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="predict-button">
+                        <span>Predict house price</span>
+                        <span aria-hidden="true">↗</span>
+                    </button>
+                </form>
+
+                <p class="form-note">
+                    Estimates depend on the quality of the training data.
+                </p>
+            </div>
+
+            <div class="panel result-panel">
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">YOUR ESTIMATE</p>
+                        <h2>Property valuation</h2>
+                    </div>
+
+                    <span class="result-icon">₹</span>
+                </div>
+
+                <div id="result-placeholder" class="result-placeholder">
+                    <div class="placeholder-icon">⌂</div>
+                    <h3>Your estimate starts here</h3>
+                    <p>
+                        Adjust the property details and select
+                        Predict house price.
+                    </p>
+                </div>
+
+                <div id="result-content" class="result-content hidden">
+                    <p class="muted">Estimated house price</p>
+
+                    <div class="price">
+                        <span>₹</span>
+                        <span id="predicted-price">0.00</span>
+                        <span class="price-unit">lakhs</span>
+                    </div>
+
+                    <p class="result-disclaimer">
+                        Model-generated estimate, not a guaranteed
+                        market valuation.
+                    </p>
+
+                    <div class="summary">
+                        <div>
+                            <span class="muted">Area</span>
+                            <strong id="summary-size">1400 sqft</strong>
+                        </div>
+
+                        <div>
+                            <span class="muted">Bedrooms</span>
+                            <strong id="summary-bedrooms">3</strong>
+                        </div>
+
+                        <div>
+                            <span class="muted">Age</span>
+                            <strong id="summary-age">5 years</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="error-message" class="error-message hidden"
+                    role="alert"></div>
+
+                <div class="result-footer">
+                    <span class="status-dot"></span>
+                    <span id="model-status">Loading training data...</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel chart-panel">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">DATA EXPLORER</p>
+                    <h2>Historical house prices</h2>
+                </div>
+
+                <span class="chart-tag">TRAINING DATA</span>
+            </div>
+
+            <p class="muted">
+                Explore the relationship between house size and
+                recorded training prices.
+            </p>
+
+            <div class="chart-container">
+                <canvas id="price-chart"
+                    aria-label="Chart of house size versus training price">
+                </canvas>
+            </div>
+
+            <p class="chart-note" id="chart-note">
+                The chart will appear after the dataset loads.
+            </p>
+        </section>
+
+        <footer class="footer">
+            <span>EstateIQ · House Price Prediction</span>
+            <span>Educational machine learning project</span>
+        </footer>
+    </main>
+</body>
+</html>
